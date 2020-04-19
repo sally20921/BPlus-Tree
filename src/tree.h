@@ -39,7 +39,7 @@ class InternalNode : public Node
 		InternalNode();
 		void Insert(std::string key, Node* rightChild);
 		void Insert(std::string key, Node* leftChild, Node* rightChild);
-		Node* Split(char* keyToParent, int size);
+		Node* Split(char* keyToParent, int* size);
 		vector<Node*> Get_Children();
 };
 
@@ -53,8 +53,8 @@ class LeafNode : public Node
 
 	public:
 		LeafNode();
-		void Insert(std::string key, string value);
-		Node* Split(char* keyToParent, int size);
+		void Insert(std::string key);
+		Node* Split(char* keyToParent, int* size);
 		Node* Get_Next();
 };
 
@@ -66,20 +66,14 @@ class BPlusTree
 		int order;	
 		Node* root;
 		void Search_Path(Node* node, std::string key, stack<Node*>* path);
-		void Destroy(Node* node);
+	
 
-
-		void Reveal_Tree(Node* node);
 
 	public:
-		void Initialize(int m);
+		BPlusTree();
 		void Insert(std::string key);
-		void Search(std::string key);
-		void Search(std::string key1, std::string key2);
+		
 
-		~BPlusTree();
-
-		void Print_Tree();
 
 };
 
