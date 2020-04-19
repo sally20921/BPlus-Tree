@@ -1,34 +1,18 @@
-#ifndef MAIN_H
-#define MAIN_H
-
-
-// uncomment for debug mode
-//#define DEBUG 
-
-
-#include <iostream>
-#include <fstream>
 #include <string>
 #include <vector>
 #include <stack>
 #include <algorithm>
 
 
-#define ERROR -1
-#define NUM_ARGS 2
-#define MIN_ORDER 3
-#define OUTPUT_FILE "output_file.txt"
-
-
-using namespace std;
+namespace inmem {
 
 
 // generic node
 class Node
 {
 	protected:
-		bool isLeaf;
-		vector<float> keys;
+		bool isLeaf_;
+		vector<std::string> keys_;
 
 	public:
 		bool Get_IsLeaf();
@@ -53,9 +37,9 @@ class InternalNode : public Node
 
 	public:
 		InternalNode();
-		void Insert(float key, Node* rightChild);
-		void Insert(float key, Node* leftChild, Node* rightChild);
-		Node* Split(float* keyToParent);
+		void Insert(std::string key, Node* rightChild);
+		void Insert(std::string key, Node* leftChild, Node* rightChild);
+		Node* Split(char* keyToParent, int size);
 		vector<Node*> Get_Children();
 };
 
@@ -70,8 +54,8 @@ class LeafNode : public Node
 
 	public:
 		LeafNode();
-		void Insert(float key, string value);
-		Node* Split(float* keyToParent);
+		void Insert(std::string key, string value);
+		Node* Split(char* keyToParent, int size);
 		vector< vector <string> > Get_Values();
 		Node* Get_Next();
 };
@@ -83,27 +67,22 @@ class BPlusTree
 	private:
 		int order;	
 		Node* root;
-		ofstream outputFile;
 		void Search_Path(Node* node, float key, stack<Node*>* path);
 		void Destroy(Node* node);
 
-#ifdef DEBUG
+
 		void Reveal_Tree(Node* node);
-#endif
 
 	public:
 		void Initialize(int m);
 		void Insert(float key, string value);
 		void Search(float key);
 		void Search(float key1, float key2);
-		void Open_Output_File();
-		void Close_Output_File();
+
 		~BPlusTree();
 
-#ifdef DEBUG
 		void Print_Tree();
-#endif
+
 };
 
-
-#endif
+}
