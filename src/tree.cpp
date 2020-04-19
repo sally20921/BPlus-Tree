@@ -1,27 +1,145 @@
 #include "tree.h"
 
 
-using namespace std;
-
 namespace inmem {
 /*Generic Node*/
 // getter function for accessing isLeaf
 bool Node :: Get_IsLeaf()
 {
 	// return whether leaf or internal node
-	return isLeaf;
+	return isLeaf_;
 }
 
 
 // getter function for accessing keys
-vector<float> Node :: Get_Keys()
+vector<std::string> Node :: Get_Keys()
 {
 	// return the vector of keys
-	return keys;
+	return keys_;
 }
 
 
-// function for searching from root to leaf node and pushing on to a stack
+/*Internal Node*/
+// constructor for internal node
+InternalNode :: InternalNode()
+{
+	isLeaf_ = false;
+}
+
+
+// function for insertion in an internal node
+void InternalNode :: Insert(std::string key, Node* rightChild)
+{
+	// insert key in to suitable position in the given internal node
+	vector<std::String>::iterator index = lower_bound(keys_.begin(), keys_.end(), key);
+	keys_.insert(index, key);
+
+	// insert right child in the immediately next index in the children vector
+	index = lower_bound(keys_.begin(), keys.end()_, key);
+	children_.insert(children_.begin() + (index - keys_.begin() + 1), rightChild);
+}
+
+
+// function for insertion in a new internal root node
+void InternalNode :: Insert(std::string key, Node* leftChild, Node* rightChild)
+{
+	// insert key, left child and right child
+	keys_.push_back(key);
+	children_.push_back(leftChild);
+	children_.push_back(rightChild);
+}
+
+
+// function for splitting an internal node
+Node* InternalNode :: Split(char* keyToParent, int size)
+{
+	int length = keys_.size();
+
+	// create a new right internal node
+	InternalNode* rightNode = new InternalNode;
+
+	// key to be moved up to the parent is the middle element in the current internal node
+	*keyToParent = keys_[length/2];
+
+	// Copy the second half of the current internal node excluding the middle element to the 
+	// new right internal node. Erase the second half of the current internal node including 
+	// the middle element, and thus current internal node becomes the left internal node.
+	rightNode->keys_.assign(keys_.begin() + (length/2 + 1), keys_.end());
+	rightNode->children_.assign(children_.begin() + (length/2 + 1), children_.end());
+	keys_.erase(keys_.begin() + length/2, keys_.end());
+	children_.erase(children_.begin() + (length/2 + 1), children_.end());
+
+	// return the new right internal node
+	return rightNode;
+}
+
+
+// getter function for accessing children
+vector<Node*> InternalNode :: Get_Children()
+{
+	// return the children vector
+	return children_;
+}
+/*Leaf Node*/
+// constructor for leaf node
+LeafNode :: LeafNode()
+{	
+	isLeaf_ = true;
+	prev_ = this;
+	next_ = this;
+}
+
+
+// function for insertion in a leaf node
+void LeafNode :: Insert(std::string key, string value)
+{
+	// search for the key in the given leaf node
+	vector<std::string>::iterator index = lower_bound(keys_.begin(), keys_.end(), key);
+
+	
+		// insert the new key
+		keys.insert(index, key);
+	
+}
+
+
+// function for splitting a leaf node
+Node* LeafNode :: Split(char* keyToParent)
+{
+	// create a new right leaf node
+	LeafNode* rightNode = new LeafNode;
+
+	// key to be moved up to the parent is the middle element in the current leaf node
+	*keyToParent = keys_[keys.size()/2];
+
+	// Copy the second half of the current leaf node to the new right leaf node. Erase the second
+	// half of the current leaf node, and thus the current leaf node becomes the left leaf node.
+	rightNode->keys_.assign(keys.begin() + keys_.size()/2, keys_.end());
+	
+	keys_.erase(keys_.begin() + keys_.size()/2, keys_.end());
+
+
+	// link the leaf nodes to form a doubly linked list
+	rightNode->next_ = next;
+	rightNode->prev_ = this;
+	next_ = rightNode;
+	(rightNode->next)->prev_ = rightNode;
+
+	// return the right leaf node
+	return rightNode;
+}
+
+
+
+// getter function for accessing the next pointer
+Node* LeafNode :: Get_Next()
+{
+	// return the pointer to the next leaf node
+	return next_;
+}
+
+/*Tree*/
+/ function for searching from root to leaf node and pushing on to a stack
 void BPlusTree :: Search_Path(Node* node, float key, stack<Node*>* path)
 {
 	// push node to stack
@@ -50,71 +168,6 @@ void BPlusTree :: Search_Path(Node* node, float key, stack<Node*>* path)
 		}
         }
 }
-
-/*Internal Node*/
-// constructor for internal node
-InternalNode :: InternalNode()
-{
-	isLeaf = false;
-}
-
-
-// function for insertion in an internal node
-void InternalNode :: Insert(float key, Node* rightChild)
-{
-	// insert key in to suitable position in the given internal node
-	vector<float>::iterator index = lower_bound(keys.begin(), keys.end(), key);
-	keys.insert(index, key);
-
-	// insert right child in the immediately next index in the children vector
-	index = lower_bound(keys.begin(), keys.end(), key);
-	children.insert(children.begin() + (index - keys.begin() + 1), rightChild);
-}
-
-
-// function for insertion in a new internal root node
-void InternalNode :: Insert(float key, Node* leftChild, Node* rightChild)
-{
-	// insert key, left child and right child
-	keys.push_back(key);
-	children.push_back(leftChild);
-	children.push_back(rightChild);
-}
-
-
-// function for splitting an internal node
-Node* InternalNode :: Split(float* keyToParent)
-{
-	int length = keys.size();
-
-	// create a new right internal node
-	InternalNode* rightNode = new InternalNode;
-
-	// key to be moved up to the parent is the middle element in the current internal node
-	*keyToParent = keys[length/2];
-
-	// Copy the second half of the current internal node excluding the middle element to the 
-	// new right internal node. Erase the second half of the current internal node including 
-	// the middle element, and thus current internal node becomes the left internal node.
-	rightNode->keys.assign(keys.begin() + (length/2 + 1), keys.end());
-	rightNode->children.assign(children.begin() + (length/2 + 1), children.end());
-	keys.erase(keys.begin() + length/2, keys.end());
-	children.erase(children.begin() + (length/2 + 1), children.end());
-
-	// return the new right internal node
-	return rightNode;
-}
-
-
-// getter function for accessing children
-vector<Node*> InternalNode :: Get_Children()
-{
-	// return the children vector
-	return children;
-}
-
-
-/*Tree*/
 // function to destroy the tree
 void BPlusTree :: Destroy(Node* node)
 {
