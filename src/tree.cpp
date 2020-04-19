@@ -4,6 +4,20 @@
 using namespace std;
 
 namespace inmem {
+// getter function for accessing isLeaf
+bool Node :: Get_IsLeaf()
+{
+	// return whether leaf or internal node
+	return isLeaf;
+}
+
+
+// getter function for accessing keys
+vector<float> Node :: Get_Keys()
+{
+	// return the vector of keys
+	return keys;
+}
 
 // function for searching from root to leaf node and pushing on to a stack
 void BPlusTree :: Search_Path(Node* node, float key, stack<Node*>* path)
