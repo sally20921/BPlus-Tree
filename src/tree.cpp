@@ -1,8 +1,9 @@
-#include "main.h"
+#include "tree.h"
 
 
 using namespace std;
 
+namespace inmem {
 
 // function for searching from root to leaf node and pushing on to a stack
 void BPlusTree :: Search_Path(Node* node, float key, stack<Node*>* path)
@@ -354,10 +355,11 @@ BPlusTree :: ~BPlusTree ()
 }
 
 
-#ifdef DEBUG
+
 // function to print the current state of the tree
 void BPlusTree :: Print_Tree()
 {
 	Reveal_Tree(root);
 }
-#endif
+
+}
