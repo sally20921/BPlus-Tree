@@ -1,4 +1,4 @@
-#include "main.h"
+/*#include "main.h"
 
 
 // main function
@@ -104,4 +104,4 @@ int main(int argc, char* argv[])
 #endif
 
 	cout<<endl<<"Check "<<OUTPUT_FILE<<" for results!"<<endl<<endl;
-}
+}*/
