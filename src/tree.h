@@ -33,7 +33,7 @@ class Node
 class InternalNode : public Node
 {
 	private:
-		vector<Node*> children;
+		vector<Node*> children_;
 
 	public:
 		InternalNode();
@@ -48,15 +48,13 @@ class InternalNode : public Node
 class LeafNode : public Node
 {
 	private:
-		LeafNode* prev;
-		LeafNode* next;
-		vector< vector <string> > values;
+		LeafNode* prev_;
+		LeafNode* next_;
 
 	public:
 		LeafNode();
 		void Insert(std::string key, string value);
 		Node* Split(char* keyToParent, int size);
-		vector< vector <string> > Get_Values();
 		Node* Get_Next();
 };
 
@@ -67,7 +65,7 @@ class BPlusTree
 	private:
 		int order;	
 		Node* root;
-		void Search_Path(Node* node, float key, stack<Node*>* path);
+		void Search_Path(Node* node, std::string key, stack<Node*>* path);
 		void Destroy(Node* node);
 
 
@@ -75,9 +73,9 @@ class BPlusTree
 
 	public:
 		void Initialize(int m);
-		void Insert(float key, string value);
-		void Search(float key);
-		void Search(float key1, float key2);
+		void Insert(std::string key);
+		void Search(std::string key);
+		void Search(std::string key1, std::string key2);
 
 		~BPlusTree();
 
